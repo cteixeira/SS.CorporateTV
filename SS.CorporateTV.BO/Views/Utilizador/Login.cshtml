@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Login";
+}
+
+@model SS.CorporateTV.BO.Models.Login
+
+@using (Html.BeginForm("Login", "Utilizador", new { ReturnUrl = Request.QueryString["ReturnUrl"] }))
+{
+
+    <div class="col-md-offset-3 col-sm-offset-2 col-md-6 col-sm-8" style="margin-top: 40px;">
+
+        <br />
+        <div class="row">
+            <div class="login-panel panel panel-default">
+                <div class="panel-body">
+                    @Html.ValidationSummary()
+                    <div class="form-group">
+                        @Html.LabelFor(login => login.UserName)
+                        @Html.TextBoxFor(login => login.UserName, new { @class = "form-control", @placeholder = SS.CorporateTV.BO.Resources.Utilizador.UserName, @autofocus = "" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(login => login.Password)
+                        @Html.PasswordFor(login => login.Password, new { @class = "form-control", placeholder = SS.CorporateTV.BO.Resources.Utilizador.Password })
+                    </div>
+                    <div class="form-group">
+                        @Html.CheckBoxFor(login => login.RememberMe)
+                        @Html.LabelFor(login => login.RememberMe)
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 10px; text-align:center;">
+                <input type="submit" class="btn btn-lg" value="@SS.CorporateTV.BO.Resources.Utilizador.Entrar" />
+            </div>
+        </div>
+    </div>
+}

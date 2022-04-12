@@ -1,0 +1,45 @@
+﻿@using SS.CorporateTV.BO.Resources
+@model SS.CorporateTV.BO.Models.ConteudoVideoModel
+
+
+<div class="modal fade" id="novoFicheiro" onshow="LimpaValidators()" tabindex="1" role="dialog" aria-labelledby="divModal" aria-hidden="true" style="height:550px;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h3>@Conteudo.AdicionarVideo</h3></div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-sm-12">
+                        @Html.LabelFor(model => model.Url)
+                        @Html.TextBoxFor(model => model.Url, new { @class = "form-control Nome", oninput = "$(this).removeClass('input-validation-error');" })
+                        @Html.ValidationMessageFor(model => model.Url, null, new { @Id = "UrlValidationMessage" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-12">
+                        @Html.LabelFor(model => model.Designacao)
+                        @Html.TextBoxFor(model => model.Designacao, new { @class = "form-control Nome", oninput = "$(this).removeClass('input-validation-error');" })
+                        @Html.ValidationMessageFor(model => model.Designacao, null, new { @Id = "NomeValidationMessage" })
+                    </div>
+                </div>
+                @*<div class="row">
+                    <div class="form-group col-sm-3">
+                        @Html.LabelFor(model => model.Duracao)
+                        @Html.TextBoxFor(model => model.Duracao, new { @class = "form-control Nome", oninput = "$(this).removeClass('input-validation-error');" })
+                        @Html.ValidationMessageFor(model => model.Duracao, null, new { @Id = "DuracaoValidationMessage" })
+                    </div>
+                </div>*@
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        onclick="EscondeModal('novoFicheiro'); $('.Nome').val(null); $('.file').val(null); $('.checkbox').prop('checked', false);">
+                    @Geral.Fechar
+                </button>
+                <button id="newFile" class="btn btn-success"
+                        onclick="StartWaiting('div.modal-footer'); NovoVideo('@Url.Action("GravarVideo", "Conteudo", new { conteudoId = ViewData["ID"] })', 'novoFicheiro'); ">
+                    @Geral.Gravar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+

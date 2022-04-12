@@ -1,0 +1,31 @@
+﻿@model IEnumerable<SS.CorporateTV.BO.Models.ConteudoModel>
+
+@{
+    ViewBag.Title = "_Lista";
+}
+@if (Model != null && Model.Any())
+{
+
+    foreach (var item in @Model)
+    {
+        <tr id="@item.ID" class="linha">
+            <td class="col-md-4">
+                @Html.DisplayFor(m => item.Designacao)
+            </td>
+            <td class="col-md-2">
+                @Html.DisplayFor(m => item.TipoDesignacao)
+            </td>
+            @*@<td class="col-md-2">
+                 Html.DisplayFor(m => item.EmUso)
+            </td>*@
+        </tr>
+    }
+}
+else
+{
+    <tr>
+        <td colspan="5" class="trNoResults">
+            @SS.CorporateTV.BO.Resources.Geral.SemResultados
+        </td>
+    </tr>
+}

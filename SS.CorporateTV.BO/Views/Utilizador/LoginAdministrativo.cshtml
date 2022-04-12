@@ -1,0 +1,37 @@
+﻿@using System.Configuration;
+
+@model SS.CorporateTV.BO.Models.LoginAdministrativo
+
+@using (Html.BeginForm("LoginAdministrativo", "Utilizador", new { ReturnUrl = Request.QueryString["ReturnUrl"] }))
+{
+    <div class="col-md-offset-3 col-sm-offset-2 col-md-6 col-sm-8" style="margin-top: 40px;">
+        @*<div class="row">
+                Ao autenticar-se terá acesso à sua àrea de trabalho onde poderá fazer o registo de horas extras, horas de viagem...
+            </div>*@
+        <br />
+        <div class="row">
+            <div class="login-panel panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">@Html.LabelFor(m => m.UtilizadorSeleccionado)</h3>
+                </div>
+                <div class="panel-body">
+                    @Html.ValidationSummary()
+                    <div class="form-group">
+                        @Html.DropDownListFor(log => log.UtilizadorSeleccionado,
+                                                        new SS.CorporateTV.Core.Utilizador(SS.CorporateTV.BO.ControladorSite.Utilizador)
+                                                        .Lista(null, SS.CorporateTV.BO.ControladorSite.Empresa.ID, true)
+                                                        .Select(obj => new SelectListItem()
+                                                        {
+                                                            Text = obj.Nome,
+                                                            Value = obj.UtilizadorID.ToString()
+                                                        }),
+                                                            "", new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-sd-2 text-center">
+                <input type="submit" class="btn btn-lg" value="@SS.CorporateTV.BO.Resources.Utilizador.Entrar" />
+            </div>
+        </div>
+    </div>
+}

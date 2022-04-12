@@ -1,0 +1,13 @@
+﻿@*@using App_Code.Helpers*@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    @*<link type="text/css" rel="stylesheet" href="@Url.Content("~/Media/layout.css")?v=@Html.GetBuild()" />*@
+    @System.Web.Optimization.Scripts.Render("~/scripts/core")
+    @System.Web.Optimization.Scripts.Render("~/scripts/jqueryval")
+</head>
+<body style="padding: 10px">
+    @RenderBody()
+</body>
+</html>

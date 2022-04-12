@@ -1,0 +1,12 @@
+﻿@using SS.CorporateTV.BO.Controllers;
+
+@model SS.CorporateTV.BO.Models.ConteudoFiltro
+
+<div class="filtro">
+    <div class="input-group" style="margin-top:5px;">
+        <span id="ispan" class="input-group-addon">
+            <i id="iicon" class="glyphicon glyphicon-search"></i>
+        </span>
+        @Html.TextBoxFor(filtro => filtro.Pesquisa, new { @class = "form-control", @placeholder = SS.CorporateTV.BO.Resources.Conteudo.Pesquisa })
+    </div>
+</div>

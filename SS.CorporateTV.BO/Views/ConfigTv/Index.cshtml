@@ -1,0 +1,32 @@
+﻿@model IEnumerable<SS.CorporateTV.BO.Models.ConfigTvModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<div class="main-block">
+    @Html.Label(@SS.CorporateTV.BO.Resources.GestaoTv.EscolhaTv)
+    @using (Html.BeginForm("Guardar", "ConfigTv"))
+    {
+        <div class="row">
+            <div class="form-group col-sm-6">
+
+                <select name="id" value="Selecionar" class="form-control">
+                    @foreach (var item in Model)
+                    {
+                        <option value=@item.ID>
+                            @item.Designacao
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-2">
+                    <input type="submit" value="OK" name="id" class="btn btn-success" />
+                </div>
+            </div>
+        </div>
+    }
+
+</div>

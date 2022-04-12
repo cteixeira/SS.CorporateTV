@@ -1,0 +1,86 @@
+﻿@using SS.CorporateTV.BO
+@using SS.CorporateTV.BO.Web.ExtensionMethods
+
+@model IEnumerable<SS.CorporateTV.BO.Models.ProgramacaoModel>
+
+@{ 
+    ViewBag.Title = "Index";
+}
+@{ var permissoes = (List<SS.CorporateTV.Core.Enum.Permissao>)ViewData["Permissoes"]; }
+<div class="main-block">
+    <div class="main-block-header">
+        <span class="glyphicon icon-utilizador"></span>@SS.CorporateTV.BO.Resources.Menu.Programacao
+
+        <div class="operacoes">
+            @if (permissoes.Contains(SS.CorporateTV.Core.Enum.Permissao.Gravar))
+            {
+                @Ajax.ActionLinkWithIcon("glyphicon glyphicon-plus-sign", SS.CorporateTV.BO.Resources.Programacao.Titulo, "_Detalhe", null, new AjaxOptions
+                {
+                    HttpMethod = "GET",
+                    UpdateTargetId = "divmodaltarget",
+                    InsertionMode = InsertionMode.Replace,
+                    OnSuccess = "MostraModal('#divModal', true);"
+                })
+            }
+        </div>
+    </div>
+    <div id="filtro">
+        @{Html.RenderPartial("_Filtro", new SS.CorporateTV.BO.Models.ProgramacaoFiltro());}
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>@SS.CorporateTV.BO.Resources.Programacao.Designacao</th>
+                </tr>
+            </thead>
+            <tbody id="ListaConteudo">
+                @{ Html.RenderPartial("_Lista", Model); }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+@using (Ajax.BeginForm("_Detalhe", null, new AjaxOptions
+{
+    UpdateTargetId = "divmodaltarget",
+    InsertionMode = InsertionMode.Replace,
+    OnSuccess = "MostraModal('#divModal', true);"
+},
+        new { id = "formgetrec" }))
+{
+    <input type="hidden" id="id" name="id" />
+    <input type="submit" id="submitgetrec" style="display: none;" />
+}
+
+
+@section scripts{
+    <script type="text/javascript">
+        detailOnClick();
+        registaPesquisa('@Url.Action("_Lista")');
+
+        $("#dialog").dialog({ autoOpen: false });
+        function opendialog() {
+            var selected = 0;
+            $("#dialog").dialog({
+                buttons: {
+                    "First": function () {
+                        selected = 1;
+                    },
+                    "Second": function () {
+                        selected = 2;
+                    },
+                    "Third": function () {
+                        selected = 3;
+                    },
+                    "Fourth": function () {
+                        selected = 4;
+                    }
+                }
+            }
+            );
+            return selected;
+        }
+    </script>
+}

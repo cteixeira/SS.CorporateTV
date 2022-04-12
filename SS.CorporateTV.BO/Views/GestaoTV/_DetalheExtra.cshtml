@@ -1,0 +1,57 @@
+﻿@model SS.CorporateTV.BO.Models.TvModel
+
+
+@{ var permissoes = (List<SS.CorporateTV.Core.Enum.Permissao>)ViewData["Permissoes"]; }
+@using (Ajax.BeginForm("Gravar", new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnBegin = "StartWaiting('.footer');",
+    OnComplete = "StopWaiting('inline');"
+}))
+{
+    @Html.HiddenFor(tr => tr.ID)
+    <div class="row">
+        <div class="form-group col-sm-5">
+            @Html.LabelFor(model => model.Designacao)
+            @Html.TextBoxFor(model => model.Designacao, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Designacao)
+        </div>
+        <div class="form-group col-sm-6">
+            @Html.LabelFor(model => model.ProgramacaoID)
+            @Html.DropDownListFor(model => model.ProgramacaoID,
+                    SS.CorporateTV.BO.Controllers.ProgramacaoController.ConstroiListaProgramacao(),
+                    "",
+                    new
+                    {
+                        @class = "form-control"
+                    })
+            @Html.ValidationMessageFor(model => model.ProgramacaoID)
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-sm-12 footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">@SS.CorporateTV.BO.Resources.Geral.Fechar</button>
+
+            @if (Model.ID != null && permissoes.Contains(SS.CorporateTV.Core.Enum.Permissao.Apagar))
+            {
+                @Ajax.ActionLink(SS.CorporateTV.BO.Resources.Geral.Apagar, "Apagar",
+                    new { @id = Model.ID },
+                    new AjaxOptions
+                    {
+                        HttpMethod = "Delete",
+                        Confirm = SS.CorporateTV.BO.Resources.Geral.TemCerteza,
+                        OnBegin = "StartWaiting('.footer');",
+                        OnComplete = "StopWaiting('inline');"
+                    },
+                    new { @class = "btn btn-danger" })
+
+            }
+            @if (permissoes.Contains(SS.CorporateTV.Core.Enum.Permissao.Gravar))
+            {
+                <input type="submit" class="btn btn-success" value="@SS.CorporateTV.BO.Resources.Geral.Gravar" />
+            }
+        </div>
+    </div>
+
+}

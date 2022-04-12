@@ -1,0 +1,314 @@
+﻿@using SS.CorporateTV.BO
+
+@model SS.CorporateTV.BO.Models.ConteudoModel
+
+@{
+    ViewBag.Title = "DetalheExtra";
+}
+
+@{ var permissoes = (List<SS.CorporateTV.Core.Enum.Permissao>)ViewData["Permissoes"]; }
+
+<style>
+    .modal.in .modal-dialog{
+        transform: none
+    }
+</style>
+
+@using (Ajax.BeginForm("Gravar", "Conteudo", new AjaxOptions
+{
+    HttpMethod = "POST",
+    OnBegin = "StartWaiting('#divModal .modal-footer');",
+    OnComplete = "StopWaiting('inline');"
+}))
+{
+    @Html.HiddenFor(ut => ut.ID)
+    <div class="row">
+        <div class="form-group col-sm-6">
+            @Html.LabelFor(model => model.Designacao)
+            @Html.TextBoxFor(model => model.Designacao, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Designacao)
+        </div>
+        <div class="form-group col-sm-6">
+            @Html.LabelFor(model => model.Tipo)
+            @Html.DropDownListFor(model => model.Tipo,
+                                SS.CorporateTV.BO.Controllers.ConteudoController.ConstroiListaTipoConteudoDropdown(), "", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Tipo)
+        </div>
+        <div id="divUrlCanal" class="form-group col-sm-11" style="@(Model.Tipo == (int)SS.CorporateTV.Core.Enum.TipoConteudo.Canal ? "" : "display: none;" )">
+            @Html.LabelFor(model => model.UrlCanal)
+            @Html.TextBoxFor(model => model.UrlCanal, new { @id = "UrlCanal", @class = "form-control", @spellcheck = "false" })
+            @*@Html.ValidationMessageFor(model => model.UrlCanal)*@
+        </div>
+        <div id="divPreview" class="form-group col-sm-1" style="padding-top: 30px;padding-left: 0px;@(Model.Tipo == (int)SS.CorporateTV.Core.Enum.TipoConteudo.Canal ? "" : "display: none;" )" >
+            <a title="Visualizar" style="cursor:pointer;" id="preview" onclick="PreviewCanal();">
+                <span class="glyphicon glyphicon-play-circle"></span>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-sm-12 footer">
+            <a class="btn btn-default" href="@(Url.Action("Index"))">@SS.CorporateTV.BO.Resources.Geral.Fechar</a>
+            @if (Model.ID != null && permissoes.Contains(SS.CorporateTV.Core.Enum.Permissao.Apagar))
+            {
+                @Ajax.ActionLink(SS.CorporateTV.BO.Resources.Geral.Apagar, "Apagar",
+                    new { @id = Model.ID },
+                    new AjaxOptions
+                    {
+                        HttpMethod = "Delete",
+                        Confirm = SS.CorporateTV.BO.Resources.Geral.TemCerteza,
+                        OnBegin = "StartWaiting('div.modal-footer');",
+                        OnComplete = "StopWaiting('inline');"
+                    },
+                    new {    @class = "btn btn-danger" })
+            }
+            @if (permissoes.Contains(SS.CorporateTV.Core.Enum.Permissao.Gravar))
+            {
+                <input type="submit" class="btn btn-success" value="@SS.CorporateTV.BO.Resources.Geral.Gravar" />
+            }            
+        </div>
+    </div>
+    
+}
+
+<div class="modal fade" id="imagemodalCanal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="bottom:-200px;">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-body" style="height:300px;">
+                <div id="iddivvideo" style="width: 415px; height: 253px; position: absolute; opacity: 1;" class="videoContainer"></div>
+                @*<video width="412" height="264" controls id="video">
+                    <source src='' type="video/mp4">
+                </video>*@
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="EscondeModal('imagemodalCanal');">@SS.CorporateTV.BO.Resources.Geral.Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function CriarObject(src) {
+        var object = document.createElement('object');
+        object.setAttribute("id", "objectid");
+        object.setAttribute("classid", "clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921");
+        object.setAttribute("style", "width: 430px; height: 240px;");
+        object.setAttribute("class", "objVideo");
+        var param1 = document.createElement("param");
+        param1.setAttribute("id", "sourcevideo");
+        param1.setAttribute("name", "Src");
+        param1.setAttribute("value", src);
+        object.appendChild(param1);
+        var param2 = document.createElement("param");
+        param2.setAttribute("name", "AutoLoop");
+        param2.setAttribute("value", "True");
+        object.appendChild(param2);
+        var param3 = document.createElement("param");
+        param3.setAttribute("name", "AutoPlay");
+        param3.setAttribute("value", "True");
+        object.appendChild(param3);
+        //var param4 = document.createElement("param");
+        //param4.setAttribute("name", "Enable");
+        //param4.setAttribute("value", "True");
+        //object.appendChild(param4);
+        AppendHTML(object);
+
+        //var index, len;
+        //var options = new Array();
+        //for (index = 0, len = src.length; index < len; ++index) {
+        //    object.playlist.add(src[index]);
+        //}
+        //object.playlist.play();
+    }
+
+    function CriarEmbed(src) {
+        if(src.length)
+        {
+            var embed = document.createElement('embed');
+            embed.setAttribute("id", "embedid");
+            embed.setAttribute("type", "application/x-vlc-plugin");
+            embed.setAttribute("pluginspage", "http://www.videolan.org");
+            embed.setAttribute("autoplay", "yes");
+            embed.setAttribute("loop", "yes");
+            embed.setAttribute("target" , src);
+            embed.style.width = "100%";
+            embed.style.height = "100%";
+            AppendHTML(embed);
+
+            if($('#embedid').length){
+                if(document.getElementById("embedid").video != undefined && document.getElementById("embedid").video != null)
+                    document.getElementById("embedid").video.aspectRatio = '16:9';
+
+                if(document.getElementById("embedid").audio != undefined && document.getElementById("embedid").audio != null)
+                    document.getElementById("embedid").audio.volume = 30;
+            }
+
+            //var index, len;
+            //var options = new Array();
+            //for (index = 0, len = src.length; index < len; ++index) {
+            //    document.getElementById("embedid").playlist.add(src[index], "Movie" + index , options);
+            //}
+            //document.getElementById("embedid").playlist.play();
+        }
+    }
+
+    function AppendHTML(obj){
+        var iddivvideo = document.getElementById("iddivvideo");
+
+        iddivvideo.appendChild(obj);
+    }
+
+    function AtivarTabs()
+    {
+        var optionSelected = $("select option:selected");
+        var valueSelected = optionSelected.val();
+        if (valueSelected == '1') //Imagem
+        {
+            $("#liVideo").hide();
+            $("#liImagem").show();
+            $("#divUrlCanal").hide();
+            $("#divPreview").hide();
+            $("#UrlCanal").prop('required', false);
+
+            $("#liImagem a").attr("id", "/CorporateTV/Conteudo/_GravaTipoImagem/@Model.ID");
+        }
+        else if (valueSelected == '2') //Video
+        {
+            $("#liVideo").show();
+            $("#liImagem").hide();
+            $("#divUrlCanal").hide();
+            $("#divPreview").hide();
+            $("#UrlCanal").prop('required', true);
+
+            $("#liVideo a").attr("id", "/CorporateTV/Conteudo/_GravaTipoVideo/@Model.ID");
+        }
+        else if (valueSelected == '3') //Video
+        {
+            $("#liVideo").hide();
+            $("#liImagem").hide();
+            $("#divUrlCanal").show();
+            $("#divPreview").hide();
+            $("#UrlCanal").prop('required', true);
+
+            $.ajax({
+                url: "/CorporateTV/Conteudo/_GravaTipoCanal/@Model.ID",
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                success: function (data) {
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                }
+            });
+        }
+    }
+
+    function PreviewCanal()
+    {
+        if ($('#UrlCanal').val())
+        {
+            var ua = window.navigator.userAgent;
+            var msie = ua.indexOf("MSIE ");
+
+            if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+                CriarObject($('#UrlCanal').val());
+            }
+            else {
+                CriarEmbed($('#UrlCanal').val());
+            }
+            //$('#video source').attr('src', $('#UrlCanal').val());
+            //$("#video")[0].load();
+            //$("#video")[0].play();
+            $('#imagemodalCanal').modal('show');
+        }
+    }
+
+    $(document).ready(function () {
+        $('select').on('change', function (e) {
+            AtivarTabs();
+        });
+
+        $("#imagemodalCanal").on("hidden.bs.modal", function () {
+            VideoPauseStream();
+        });
+    });
+
+    //Detect VLC plugin
+    (function () {
+
+        // Return text message based on plugin detection result
+        var getStatusMsg = function (obj) {
+            if (obj.status == 1) return "installed & enabled, version is >= " + obj.minVersion;
+            if (obj.status == 0) return "installed & enabled, version is unknown";
+            if (obj.status == -0.1) return "installed & enabled, version is < " + obj.minVersion;
+            if (obj.status == -0.2) return "installed but not enabled";
+            if (obj.status == -1) return "not installed or not enabled";
+            if (obj.status == -3) return "error...bad input argument to PluginDetect method";
+            return "unknown";
+        };   // end of function
+
+        var out = document.getElementById("detectVLC_output");  // node for output text
+
+        // Add text to output node
+        var docWrite = function (text) {
+            if (out) {
+                if (text) {
+                    text = text.replace(/&nbsp;/g, "\u00a0");
+                    out.appendChild(document.createTextNode(text));
+                };
+                out.appendChild(document.createElement("br"));
+            };
+        };  // end of function
+
+
+        // Object that holds all data on the plugin
+        var P = {
+            name: "VLC", status: -1, version: null, minVersion: "2,0,0,0",
+
+            allowInstance: false
+        };
+
+        var $ = PluginDetect;
+
+        if ($.getVersion) {
+            P.version = $.getVersion(P.name, P.allowInstance);
+            //docWrite("Plugin version: " + P.version);
+            //alert('version: ' + P.version);//null
+            if (!P.version)
+                document.getElementById('divPreview').style.display = 'none';
+        };
+
+        if ($.isMinVersion) {
+            P.status = $.isMinVersion(P.name, P.minVersion, P.allowInstance);
+            //alert('status: ' + P.status);
+            //docWrite("Plugin status: " + getStatusMsg(P));//-1
+            if (P.status == -1)
+                document.getElementById('divPreview').style.display = 'none';
+        };
+
+
+        if ($.browser.isIE) {
+            var res = false;
+            if (!$.browser.ActiveXEnabled)
+            {
+                document.getElementById('divPreview').style.display = 'none';
+            }
+            //alert(res);
+            if ($.browser.ActiveXFilteringEnabled) {
+                document.getElementById('divPreview').style.display = 'none';
+            }
+
+            //alert(res);
+            //docWrite("");
+            //docWrite("ActiveX enabled / ActiveX scripting enabled: " +
+            //  ($.browser.ActiveXEnabled ? "true" : "false [this may prevent the plugin from running in Internet Explorer]")
+            //);
+            //docWrite("ActiveX Filtering enabled: " +
+            //  ($.browser.ActiveXFilteringEnabled ? "true [this may prevent the plugin from running in Internet Explorer]" : "false")
+            //);
+        };
+    })();
+</script>

@@ -1,0 +1,77 @@
+﻿@using SS.CorporateTV.Core
+@model SS.CorporateTV.FO.Models.ConfigDone
+
+@{
+    ViewBag.Title = "Index";
+}
+@System.Web.Optimization.Scripts.Render("~/scripts/core")
+
+@*<script src="/CorporateTV_FO/Scripts/jquery-1.10.2.js"></script>*@
+
+<style type='text/css'>
+    #iddivvideo {
+        position: relative;
+    }
+
+    #iddivvideo > img {
+        left: 0;
+        opacity: 0;
+        position: absolute;
+        top: 0;
+    }
+
+    #iddivvideo > img.active {
+        opacity: 1;
+        -webkit-transition: opacity 1s ease-in-out;
+        -moz-transition: opacity 1s ease-in-out;
+        -o-transition: opacity 1s ease-in-out;
+        transition: opacity 1s ease-in-out;
+    }
+    .videoContainer {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        display: block;   
+    }
+
+    body {
+        margin: 0px;        
+    }
+</style>
+
+<div id="iddivvideo" style="position: absolute; opacity: 1;" class="videoContainer"></div>
+
+<input id="intervaloatualizarstream" type="hidden" value="@System.Web.Configuration.WebConfigurationManager.AppSettings["intervaloatualizarstream"]" />
+<input id="idtv" type="hidden" value="@Model.TvID">
+<input id="fimConteudoNoAr" type="hidden" value="@Model.ConteudoNoAr.TempoParaFim">
+
+        <script>
+
+            var intervaloatualizarstream = document.getElementById("intervaloatualizarstream").value;
+            var intervalofimprograma = document.getElementById("fimConteudoNoAr").value;
+            var idtv = document.getElementById("idtv").value;
+
+            var ROOT = '@Url.Content("~/")';
+            var TIPOCONTEUDOVIDEO = '@((Int16)@SS.CorporateTV.Core.Enum.TipoConteudo.Video)';
+            var TIPOCONTEUDOCANAL = '@((Int16)@SS.CorporateTV.Core.Enum.TipoConteudo.Canal)';
+            var TIPOCONTEUDOIMAGEM = '@((Int16)@SS.CorporateTV.Core.Enum.TipoConteudo.Imagem)';
+            var AspectRatioVideoServer = '@System.Web.Configuration.WebConfigurationManager.AppSettings["AspectRatioVideoServer"]';
+            var VolumeVideoServer = @System.Web.Configuration.WebConfigurationManager.AppSettings["VolumeVideoServer"];
+            var VolumeVideoFile = @System.Web.Configuration.WebConfigurationManager.AppSettings["VolumeVideoFile"];
+
+            var agendamentoID = @Model.ConteudoNoAr.ProgramacaoIDNoAr;
+            var conteudoID = @Model.ConteudoNoAr.ConteudoIDNoAr;
+            var tipoConteudoAr = '@Model.ConteudoNoAr.TipoConteudoAr';
+            @*var videosNoAr = '@Html.Raw(Json.Encode(Model.ConteudoNoAr.Videos))';
+            var imagensNoAr = '@Html.Raw(Json.Encode(Model.ConteudoNoAr.Imagens))';
+            var duracaoImagensNoAr = '@Html.Raw(Json.Encode(Model.ConteudoNoAr.DuracaoImagens))';*@
+            var videosNoAr = '@Html.Raw(Model.ConteudoNoAr.VideosJson)';
+            var imagensNoAr = '@Html.Raw(Model.ConteudoNoAr.ImagensJson)';
+            var duracaoImagensNoAr = '@Html.Raw(Json.Encode(Model.ConteudoNoAr.DuracaoImagens))';
+
+            window.onload = function () {
+                OnLoadMain();
+
+            }
+</script>

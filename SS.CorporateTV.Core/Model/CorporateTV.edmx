@@ -1,0 +1,821 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="CorporateTVModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Conteudo">
+          <Key>
+            <PropertyRef Name="ConteudoID" />
+          </Key>
+          <Property Name="ConteudoID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmpresaID" Type="bigint" />
+          <Property Name="Designacao" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Tipo" Type="smallint" Nullable="false" />
+          <Property Name="QRCode" Type="nvarchar" MaxLength="200" />
+          <Property Name="DataAlteracao" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ConteudoImagem">
+          <Key>
+            <PropertyRef Name="ConteudoImagemID" />
+          </Key>
+          <Property Name="ConteudoImagemID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ConteudoID" Type="bigint" Nullable="false" />
+          <Property Name="UrlImagem" Type="nvarchar" MaxLength="200" />
+          <Property Name="Duracao" Type="int" Nullable="false" />
+          <Property Name="Extensao" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="Imagem" Type="varbinary(max)" Nullable="false" />
+          <Property Name="HashFicheiro" Type="varbinary" MaxLength="130" />
+          <Property Name="Designacao" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Ordem" Type="int" />
+        </EntityType>
+        <EntityType Name="ConteudoVideo">
+          <Key>
+            <PropertyRef Name="ConteudoVideoID" />
+          </Key>
+          <Property Name="ConteudoVideoID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ConteudoID" Type="bigint" Nullable="false" />
+          <Property Name="Designacao" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Url" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Duracao" Type="int" />
+          <Property Name="Ordem" Type="int" />
+        </EntityType>
+        <EntityType Name="Empresa">
+          <Key>
+            <PropertyRef Name="EmpresaID" />
+          </Key>
+          <Property Name="EmpresaID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Designacao" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Url" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Logo" Type="nvarchar(max)" />
+          <Property Name="Cor1" Type="nvarchar" MaxLength="8" />
+          <Property Name="Cor2" Type="nvarchar" MaxLength="8" />
+          <Property Name="Cor3" Type="nvarchar" MaxLength="8" />
+          <Property Name="TempoRefrescarConteudo" Type="smallint" Nullable="false" />
+          <Property Name="Activo" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EmpresaModulo">
+          <Key>
+            <PropertyRef Name="EmpresaModuloID" />
+          </Key>
+          <Property Name="EmpresaModuloID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmpresaID" Type="bigint" Nullable="false" />
+          <Property Name="Modulo" Type="smallint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Evento">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="text" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="eventstart" Type="datetime" Nullable="false" />
+          <Property Name="eventend" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LogErro">
+          <Key>
+            <PropertyRef Name="LogErroID" />
+          </Key>
+          <Property Name="LogErroID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Importancia" Type="bigint" />
+          <Property Name="Origem" Type="nvarchar(max)" />
+          <Property Name="Descricao" Type="nvarchar(max)" />
+          <Property Name="DataHora" Type="datetime" />
+          <Property Name="UserName" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="LogEvento">
+          <Key>
+            <PropertyRef Name="LogEventoID" />
+          </Key>
+          <Property Name="LogEventoID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EventoID" Type="int" Nullable="false" />
+          <Property Name="UtilizadorID" Type="bigint" Nullable="false" />
+          <Property Name="Tabela" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Campo" Type="nvarchar" MaxLength="50" />
+          <Property Name="Identificador" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="ValorNovo" Type="nvarchar" MaxLength="300" />
+          <Property Name="ValorAnterior" Type="nvarchar" MaxLength="300" />
+          <Property Name="DataHora" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Programacao">
+          <Key>
+            <PropertyRef Name="ProgramacaoID" />
+          </Key>
+          <Property Name="ProgramacaoID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmpresaID" Type="bigint" Nullable="false" />
+          <Property Name="Designacao" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="DataAlteracao" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ProgramacaoAgendamento">
+          <Key>
+            <PropertyRef Name="ProgramacaoAgendamentoID" />
+          </Key>
+          <Property Name="ProgramacaoAgendamentoID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProgramacaoID" Type="bigint" Nullable="false" />
+          <Property Name="ConteudoID" Type="bigint" Nullable="false" />
+          <Property Name="DiaSemana" Type="smallint" Nullable="false" />
+          <Property Name="Inicio" Type="time" Precision="7" Nullable="false" />
+          <Property Name="Fim" Type="time" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tv">
+          <Key>
+            <PropertyRef Name="TvID" />
+          </Key>
+          <Property Name="TvID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmpresaID" Type="bigint" Nullable="false" />
+          <Property Name="Designacao" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="ProgramacaoID" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Utilizador">
+          <Key>
+            <PropertyRef Name="UtilizadorID" />
+          </Key>
+          <Property Name="UtilizadorID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmpresaID" Type="bigint" Nullable="false" />
+          <Property Name="Nome" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="200" />
+          <Property Name="PerfilUtilizador" Type="smallint" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Conteudo_Empresa">
+          <End Role="Empresa" Type="Self.Empresa" Multiplicity="0..1" />
+          <End Role="Conteudo" Type="Self.Conteudo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empresa">
+              <PropertyRef Name="EmpresaID" />
+            </Principal>
+            <Dependent Role="Conteudo">
+              <PropertyRef Name="EmpresaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ConteudoImagem_Conteudo">
+          <End Role="Conteudo" Type="Self.Conteudo" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ConteudoImagem" Type="Self.ConteudoImagem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Conteudo">
+              <PropertyRef Name="ConteudoID" />
+            </Principal>
+            <Dependent Role="ConteudoImagem">
+              <PropertyRef Name="ConteudoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ConteudoVideo_Conteudo">
+          <End Role="Conteudo" Type="Self.Conteudo" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ConteudoVideo" Type="Self.ConteudoVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Conteudo">
+              <PropertyRef Name="ConteudoID" />
+            </Principal>
+            <Dependent Role="ConteudoVideo">
+              <PropertyRef Name="ConteudoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmpresaModulo_Empresa">
+          <End Role="Empresa" Type="Self.Empresa" Multiplicity="1" />
+          <End Role="EmpresaModulo" Type="Self.EmpresaModulo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empresa">
+              <PropertyRef Name="EmpresaID" />
+            </Principal>
+            <Dependent Role="EmpresaModulo">
+              <PropertyRef Name="EmpresaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Programacao_Empresa">
+          <End Role="Empresa" Type="Self.Empresa" Multiplicity="1" />
+          <End Role="Programacao" Type="Self.Programacao" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empresa">
+              <PropertyRef Name="EmpresaID" />
+            </Principal>
+            <Dependent Role="Programacao">
+              <PropertyRef Name="EmpresaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProgramacaoAgendamento_Conteudo">
+          <End Role="Conteudo" Type="Self.Conteudo" Multiplicity="1" />
+          <End Role="ProgramacaoAgendamento" Type="Self.ProgramacaoAgendamento" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Conteudo">
+              <PropertyRef Name="ConteudoID" />
+            </Principal>
+            <Dependent Role="ProgramacaoAgendamento">
+              <PropertyRef Name="ConteudoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProgramacaoAgendamento_Programacao">
+          <End Role="Programacao" Type="Self.Programacao" Multiplicity="1" />
+          <End Role="ProgramacaoAgendamento" Type="Self.ProgramacaoAgendamento" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Programacao">
+              <PropertyRef Name="ProgramacaoID" />
+            </Principal>
+            <Dependent Role="ProgramacaoAgendamento">
+              <PropertyRef Name="ProgramacaoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tv_Empresa">
+          <End Role="Empresa" Type="Self.Empresa" Multiplicity="1" />
+          <End Role="Tv" Type="Self.Tv" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empresa">
+              <PropertyRef Name="EmpresaID" />
+            </Principal>
+            <Dependent Role="Tv">
+              <PropertyRef Name="EmpresaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tv_Programacao">
+          <End Role="Programacao" Type="Self.Programacao" Multiplicity="1" />
+          <End Role="Tv" Type="Self.Tv" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Programacao">
+              <PropertyRef Name="ProgramacaoID" />
+            </Principal>
+            <Dependent Role="Tv">
+              <PropertyRef Name="ProgramacaoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Utilizador_Utilizador">
+          <End Role="Empresa" Type="Self.Empresa" Multiplicity="1" />
+          <End Role="Utilizador" Type="Self.Utilizador" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empresa">
+              <PropertyRef Name="EmpresaID" />
+            </Principal>
+            <Dependent Role="Utilizador">
+              <PropertyRef Name="EmpresaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CorporateTVModelStoreContainer">
+          <EntitySet Name="Conteudo" EntityType="Self.Conteudo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ConteudoImagem" EntityType="Self.ConteudoImagem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ConteudoVideo" EntityType="Self.ConteudoVideo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Empresa" EntityType="Self.Empresa" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmpresaModulo" EntityType="Self.EmpresaModulo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Evento" EntityType="Self.Evento" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LogErro" EntityType="Self.LogErro" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LogEvento" EntityType="Self.LogEvento" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Programacao" EntityType="Self.Programacao" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProgramacaoAgendamento" EntityType="Self.ProgramacaoAgendamento" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tv" EntityType="Self.Tv" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Utilizador" EntityType="Self.Utilizador" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Conteudo_Empresa" Association="Self.FK_Conteudo_Empresa">
+            <End Role="Empresa" EntitySet="Empresa" />
+            <End Role="Conteudo" EntitySet="Conteudo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ConteudoImagem_Conteudo" Association="Self.FK_ConteudoImagem_Conteudo">
+            <End Role="Conteudo" EntitySet="Conteudo" />
+            <End Role="ConteudoImagem" EntitySet="ConteudoImagem" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ConteudoVideo_Conteudo" Association="Self.FK_ConteudoVideo_Conteudo">
+            <End Role="Conteudo" EntitySet="Conteudo" />
+            <End Role="ConteudoVideo" EntitySet="ConteudoVideo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmpresaModulo_Empresa" Association="Self.FK_EmpresaModulo_Empresa">
+            <End Role="Empresa" EntitySet="Empresa" />
+            <End Role="EmpresaModulo" EntitySet="EmpresaModulo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Programacao_Empresa" Association="Self.FK_Programacao_Empresa">
+            <End Role="Empresa" EntitySet="Empresa" />
+            <End Role="Programacao" EntitySet="Programacao" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProgramacaoAgendamento_Conteudo" Association="Self.FK_ProgramacaoAgendamento_Conteudo">
+            <End Role="Conteudo" EntitySet="Conteudo" />
+            <End Role="ProgramacaoAgendamento" EntitySet="ProgramacaoAgendamento" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProgramacaoAgendamento_Programacao" Association="Self.FK_ProgramacaoAgendamento_Programacao">
+            <End Role="Programacao" EntitySet="Programacao" />
+            <End Role="ProgramacaoAgendamento" EntitySet="ProgramacaoAgendamento" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tv_Empresa" Association="Self.FK_Tv_Empresa">
+            <End Role="Empresa" EntitySet="Empresa" />
+            <End Role="Tv" EntitySet="Tv" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tv_Programacao" Association="Self.FK_Tv_Programacao">
+            <End Role="Programacao" EntitySet="Programacao" />
+            <End Role="Tv" EntitySet="Tv" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Utilizador_Utilizador" Association="Self.FK_Utilizador_Utilizador">
+            <End Role="Empresa" EntitySet="Empresa" />
+            <End Role="Utilizador" EntitySet="Utilizador" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CorporateTVModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Conteudo">
+          <Key>
+            <PropertyRef Name="ConteudoID" />
+          </Key>
+          <Property Name="ConteudoID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmpresaID" Type="Int64" />
+          <Property Name="Designacao" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Tipo" Type="Int16" Nullable="false" />
+          <Property Name="QRCode" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Empresa" Relationship="Self.FK_Conteudo_Empresa" FromRole="Conteudo" ToRole="Empresa" />
+          <NavigationProperty Name="ConteudoImagem" Relationship="Self.FK_ConteudoImagem_Conteudo" FromRole="Conteudo" ToRole="ConteudoImagem" />
+          <NavigationProperty Name="ConteudoVideo" Relationship="Self.FK_ConteudoVideo_Conteudo" FromRole="Conteudo" ToRole="ConteudoVideo" />
+          <NavigationProperty Name="ProgramacaoAgendamento" Relationship="Self.FK_ProgramacaoAgendamento_Conteudo" FromRole="Conteudo" ToRole="ProgramacaoAgendamento" />
+          <Property Name="DataAlteracao" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="ConteudoImagem">
+          <Key>
+            <PropertyRef Name="ConteudoImagemID" />
+          </Key>
+          <Property Name="ConteudoImagemID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ConteudoID" Type="Int64" Nullable="false" />
+          <Property Name="UrlImagem" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Duracao" Type="Int32" Nullable="false" />
+          <Property Name="Extensao" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Imagem" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <Property Name="HashFicheiro" Type="Binary" MaxLength="130" FixedLength="false" />
+          <Property Name="Designacao" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Ordem" Type="Int32" />
+          <NavigationProperty Name="Conteudo" Relationship="Self.FK_ConteudoImagem_Conteudo" FromRole="ConteudoImagem" ToRole="Conteudo" />
+        </EntityType>
+        <EntityType Name="ConteudoVideo">
+          <Key>
+            <PropertyRef Name="ConteudoVideoID" />
+          </Key>
+          <Property Name="ConteudoVideoID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ConteudoID" Type="Int64" Nullable="false" />
+          <Property Name="Designacao" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Url" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Duracao" Type="Int32" />
+          <Property Name="Ordem" Type="Int32" />
+          <NavigationProperty Name="Conteudo" Relationship="Self.FK_ConteudoVideo_Conteudo" FromRole="ConteudoVideo" ToRole="Conteudo" />
+        </EntityType>
+        <EntityType Name="Empresa">
+          <Key>
+            <PropertyRef Name="EmpresaID" />
+          </Key>
+          <Property Name="EmpresaID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Designacao" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Url" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Logo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Cor1" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Name="Cor2" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Name="Cor3" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Name="TempoRefrescarConteudo" Type="Int16" Nullable="false" />
+          <Property Name="Activo" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Conteudo" Relationship="Self.FK_Conteudo_Empresa" FromRole="Empresa" ToRole="Conteudo" />
+          <NavigationProperty Name="EmpresaModulo" Relationship="Self.FK_EmpresaModulo_Empresa" FromRole="Empresa" ToRole="EmpresaModulo" />
+          <NavigationProperty Name="Programacao" Relationship="Self.FK_Programacao_Empresa" FromRole="Empresa" ToRole="Programacao" />
+          <NavigationProperty Name="Tv" Relationship="Self.FK_Tv_Empresa" FromRole="Empresa" ToRole="Tv" />
+          <NavigationProperty Name="Utilizador" Relationship="Self.FK_Utilizador_Utilizador" FromRole="Empresa" ToRole="Utilizador" />
+        </EntityType>
+        <EntityType Name="EmpresaModulo">
+          <Key>
+            <PropertyRef Name="EmpresaModuloID" />
+          </Key>
+          <Property Name="EmpresaModuloID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmpresaID" Type="Int64" Nullable="false" />
+          <Property Name="Modulo" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="Empresa" Relationship="Self.FK_EmpresaModulo_Empresa" FromRole="EmpresaModulo" ToRole="Empresa" />
+        </EntityType>
+        <EntityType Name="Evento">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="text" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="eventstart" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="eventend" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="LogErro">
+          <Key>
+            <PropertyRef Name="LogErroID" />
+          </Key>
+          <Property Name="LogErroID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Importancia" Type="Int64" />
+          <Property Name="Origem" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Descricao" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DataHora" Type="DateTime" Precision="3" />
+          <Property Name="UserName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="LogEvento">
+          <Key>
+            <PropertyRef Name="LogEventoID" />
+          </Key>
+          <Property Name="LogEventoID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EventoID" Type="Int32" Nullable="false" />
+          <Property Name="UtilizadorID" Type="Int64" Nullable="false" />
+          <Property Name="Tabela" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Campo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Identificador" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="ValorNovo" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ValorAnterior" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="DataHora" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="Programacao">
+          <Key>
+            <PropertyRef Name="ProgramacaoID" />
+          </Key>
+          <Property Name="ProgramacaoID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmpresaID" Type="Int64" Nullable="false" />
+          <Property Name="Designacao" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Empresa" Relationship="Self.FK_Programacao_Empresa" FromRole="Programacao" ToRole="Empresa" />
+          <NavigationProperty Name="ProgramacaoAgendamento" Relationship="Self.FK_ProgramacaoAgendamento_Programacao" FromRole="Programacao" ToRole="ProgramacaoAgendamento" />
+          <NavigationProperty Name="Tv" Relationship="Self.FK_Tv_Programacao" FromRole="Programacao" ToRole="Tv" />
+          <Property Name="DataAlteracao" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="ProgramacaoAgendamento">
+          <Key>
+            <PropertyRef Name="ProgramacaoAgendamentoID" />
+          </Key>
+          <Property Name="ProgramacaoAgendamentoID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProgramacaoID" Type="Int64" Nullable="false" />
+          <Property Name="ConteudoID" Type="Int64" Nullable="false" />
+          <Property Name="DiaSemana" Type="Int16" Nullable="false" />
+          <Property Name="Inicio" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="Fim" Type="Time" Nullable="false" Precision="7" />
+          <NavigationProperty Name="Conteudo" Relationship="Self.FK_ProgramacaoAgendamento_Conteudo" FromRole="ProgramacaoAgendamento" ToRole="Conteudo" />
+          <NavigationProperty Name="Programacao" Relationship="Self.FK_ProgramacaoAgendamento_Programacao" FromRole="ProgramacaoAgendamento" ToRole="Programacao" />
+        </EntityType>
+        <EntityType Name="Tv">
+          <Key>
+            <PropertyRef Name="TvID" />
+          </Key>
+          <Property Name="TvID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmpresaID" Type="Int64" Nullable="false" />
+          <Property Name="Designacao" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ProgramacaoID" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Empresa" Relationship="Self.FK_Tv_Empresa" FromRole="Tv" ToRole="Empresa" />
+          <NavigationProperty Name="Programacao" Relationship="Self.FK_Tv_Programacao" FromRole="Tv" ToRole="Programacao" />
+        </EntityType>
+        <EntityType Name="Utilizador">
+          <Key>
+            <PropertyRef Name="UtilizadorID" />
+          </Key>
+          <Property Name="UtilizadorID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmpresaID" Type="Int64" Nullable="false" />
+          <Property Name="Nome" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Username" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PerfilUtilizador" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="Empresa" Relationship="Self.FK_Utilizador_Utilizador" FromRole="Utilizador" ToRole="Empresa" />
+        </EntityType>
+        <Association Name="FK_Conteudo_Empresa">
+          <End Role="Empresa" Type="Self.Empresa" Multiplicity="0..1" />
+          <End Role="Conteudo" Type="Self.Conteudo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empresa">
+              <PropertyRef Name="EmpresaID" />
+            </Principal>
+            <Dependent Role="Conteudo">
+              <PropertyRef Name="EmpresaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ConteudoImagem_Conteudo">
+          <End Role="Conteudo" Type="Self.Conteudo" Multiplicity="1" />
+          <End Role="ConteudoImagem" Type="Self.ConteudoImagem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Conteudo">
+              <PropertyRef Name="ConteudoID" />
+            </Principal>
+            <Dependent Role="ConteudoImagem">
+              <PropertyRef Name="ConteudoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ConteudoVideo_Conteudo">
+          <End Role="Conteudo" Type="Self.Conteudo" Multiplicity="1" />
+          <End Role="ConteudoVideo" Type="Self.ConteudoVideo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Conteudo">
+              <PropertyRef Name="ConteudoID" />
+            </Principal>
+            <Dependent Role="ConteudoVideo">
+              <PropertyRef Name="ConteudoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProgramacaoAgendamento_Conteudo">
+          <End Role="Conteudo" Type="Self.Conteudo" Multiplicity="1" />
+          <End Role="ProgramacaoAgendamento" Type="Self.ProgramacaoAgendamento" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Conteudo">
+              <PropertyRef Name="ConteudoID" />
+            </Principal>
+            <Dependent Role="ProgramacaoAgendamento">
+              <PropertyRef Name="ConteudoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmpresaModulo_Empresa">
+          <End Role="Empresa" Type="Self.Empresa" Multiplicity="1" />
+          <End Role="EmpresaModulo" Type="Self.EmpresaModulo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empresa">
+              <PropertyRef Name="EmpresaID" />
+            </Principal>
+            <Dependent Role="EmpresaModulo">
+              <PropertyRef Name="EmpresaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Programacao_Empresa">
+          <End Role="Empresa" Type="Self.Empresa" Multiplicity="1" />
+          <End Role="Programacao" Type="Self.Programacao" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empresa">
+              <PropertyRef Name="EmpresaID" />
+            </Principal>
+            <Dependent Role="Programacao">
+              <PropertyRef Name="EmpresaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tv_Empresa">
+          <End Role="Empresa" Type="Self.Empresa" Multiplicity="1" />
+          <End Role="Tv" Type="Self.Tv" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empresa">
+              <PropertyRef Name="EmpresaID" />
+            </Principal>
+            <Dependent Role="Tv">
+              <PropertyRef Name="EmpresaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Utilizador_Utilizador">
+          <End Role="Empresa" Type="Self.Empresa" Multiplicity="1" />
+          <End Role="Utilizador" Type="Self.Utilizador" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Empresa">
+              <PropertyRef Name="EmpresaID" />
+            </Principal>
+            <Dependent Role="Utilizador">
+              <PropertyRef Name="EmpresaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProgramacaoAgendamento_Programacao">
+          <End Role="Programacao" Type="Self.Programacao" Multiplicity="1" />
+          <End Role="ProgramacaoAgendamento" Type="Self.ProgramacaoAgendamento" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Programacao">
+              <PropertyRef Name="ProgramacaoID" />
+            </Principal>
+            <Dependent Role="ProgramacaoAgendamento">
+              <PropertyRef Name="ProgramacaoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tv_Programacao">
+          <End Role="Programacao" Type="Self.Programacao" Multiplicity="1" />
+          <End Role="Tv" Type="Self.Tv" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Programacao">
+              <PropertyRef Name="ProgramacaoID" />
+            </Principal>
+            <Dependent Role="Tv">
+              <PropertyRef Name="ProgramacaoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Context" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Conteudo" EntityType="Self.Conteudo" />
+          <EntitySet Name="ConteudoImagem" EntityType="Self.ConteudoImagem" />
+          <EntitySet Name="ConteudoVideo" EntityType="Self.ConteudoVideo" />
+          <EntitySet Name="Empresa" EntityType="Self.Empresa" />
+          <EntitySet Name="EmpresaModulo" EntityType="Self.EmpresaModulo" />
+          <EntitySet Name="Evento" EntityType="Self.Evento" />
+          <EntitySet Name="LogErro" EntityType="Self.LogErro" />
+          <EntitySet Name="LogEvento" EntityType="Self.LogEvento" />
+          <EntitySet Name="Programacao" EntityType="Self.Programacao" />
+          <EntitySet Name="ProgramacaoAgendamento" EntityType="Self.ProgramacaoAgendamento" />
+          <EntitySet Name="Tv" EntityType="Self.Tv" />
+          <EntitySet Name="Utilizador" EntityType="Self.Utilizador" />
+          <AssociationSet Name="FK_Conteudo_Empresa" Association="Self.FK_Conteudo_Empresa">
+            <End Role="Empresa" EntitySet="Empresa" />
+            <End Role="Conteudo" EntitySet="Conteudo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ConteudoImagem_Conteudo" Association="Self.FK_ConteudoImagem_Conteudo">
+            <End Role="Conteudo" EntitySet="Conteudo" />
+            <End Role="ConteudoImagem" EntitySet="ConteudoImagem" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ConteudoVideo_Conteudo" Association="Self.FK_ConteudoVideo_Conteudo">
+            <End Role="Conteudo" EntitySet="Conteudo" />
+            <End Role="ConteudoVideo" EntitySet="ConteudoVideo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProgramacaoAgendamento_Conteudo" Association="Self.FK_ProgramacaoAgendamento_Conteudo">
+            <End Role="Conteudo" EntitySet="Conteudo" />
+            <End Role="ProgramacaoAgendamento" EntitySet="ProgramacaoAgendamento" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmpresaModulo_Empresa" Association="Self.FK_EmpresaModulo_Empresa">
+            <End Role="Empresa" EntitySet="Empresa" />
+            <End Role="EmpresaModulo" EntitySet="EmpresaModulo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Programacao_Empresa" Association="Self.FK_Programacao_Empresa">
+            <End Role="Empresa" EntitySet="Empresa" />
+            <End Role="Programacao" EntitySet="Programacao" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tv_Empresa" Association="Self.FK_Tv_Empresa">
+            <End Role="Empresa" EntitySet="Empresa" />
+            <End Role="Tv" EntitySet="Tv" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Utilizador_Utilizador" Association="Self.FK_Utilizador_Utilizador">
+            <End Role="Empresa" EntitySet="Empresa" />
+            <End Role="Utilizador" EntitySet="Utilizador" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProgramacaoAgendamento_Programacao" Association="Self.FK_ProgramacaoAgendamento_Programacao">
+            <End Role="Programacao" EntitySet="Programacao" />
+            <End Role="ProgramacaoAgendamento" EntitySet="ProgramacaoAgendamento" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tv_Programacao" Association="Self.FK_Tv_Programacao">
+            <End Role="Programacao" EntitySet="Programacao" />
+            <End Role="Tv" EntitySet="Tv" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CorporateTVModelStoreContainer" CdmEntityContainer="Context">
+          <EntitySetMapping Name="Conteudo">
+            <EntityTypeMapping TypeName="CorporateTVModel.Conteudo">
+              <MappingFragment StoreEntitySet="Conteudo">
+                <ScalarProperty Name="DataAlteracao" ColumnName="DataAlteracao" />
+                <ScalarProperty Name="ConteudoID" ColumnName="ConteudoID" />
+                <ScalarProperty Name="EmpresaID" ColumnName="EmpresaID" />
+                <ScalarProperty Name="Designacao" ColumnName="Designacao" />
+                <ScalarProperty Name="Tipo" ColumnName="Tipo" />
+                <ScalarProperty Name="QRCode" ColumnName="QRCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ConteudoImagem">
+            <EntityTypeMapping TypeName="CorporateTVModel.ConteudoImagem">
+              <MappingFragment StoreEntitySet="ConteudoImagem">
+                <ScalarProperty Name="ConteudoImagemID" ColumnName="ConteudoImagemID" />
+                <ScalarProperty Name="ConteudoID" ColumnName="ConteudoID" />
+                <ScalarProperty Name="UrlImagem" ColumnName="UrlImagem" />
+                <ScalarProperty Name="Duracao" ColumnName="Duracao" />
+                <ScalarProperty Name="Extensao" ColumnName="Extensao" />
+                <ScalarProperty Name="Imagem" ColumnName="Imagem" />
+                <ScalarProperty Name="HashFicheiro" ColumnName="HashFicheiro" />
+                <ScalarProperty Name="Designacao" ColumnName="Designacao" />
+                <ScalarProperty Name="Ordem" ColumnName="Ordem" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ConteudoVideo">
+            <EntityTypeMapping TypeName="CorporateTVModel.ConteudoVideo">
+              <MappingFragment StoreEntitySet="ConteudoVideo">
+                <ScalarProperty Name="ConteudoVideoID" ColumnName="ConteudoVideoID" />
+                <ScalarProperty Name="ConteudoID" ColumnName="ConteudoID" />
+                <ScalarProperty Name="Designacao" ColumnName="Designacao" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="Duracao" ColumnName="Duracao" />
+                <ScalarProperty Name="Ordem" ColumnName="Ordem" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Empresa">
+            <EntityTypeMapping TypeName="CorporateTVModel.Empresa">
+              <MappingFragment StoreEntitySet="Empresa">
+                <ScalarProperty Name="EmpresaID" ColumnName="EmpresaID" />
+                <ScalarProperty Name="Designacao" ColumnName="Designacao" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="Logo" ColumnName="Logo" />
+                <ScalarProperty Name="Cor1" ColumnName="Cor1" />
+                <ScalarProperty Name="Cor2" ColumnName="Cor2" />
+                <ScalarProperty Name="Cor3" ColumnName="Cor3" />
+                <ScalarProperty Name="TempoRefrescarConteudo" ColumnName="TempoRefrescarConteudo" />
+                <ScalarProperty Name="Activo" ColumnName="Activo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmpresaModulo">
+            <EntityTypeMapping TypeName="CorporateTVModel.EmpresaModulo">
+              <MappingFragment StoreEntitySet="EmpresaModulo">
+                <ScalarProperty Name="EmpresaModuloID" ColumnName="EmpresaModuloID" />
+                <ScalarProperty Name="EmpresaID" ColumnName="EmpresaID" />
+                <ScalarProperty Name="Modulo" ColumnName="Modulo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Evento">
+            <EntityTypeMapping TypeName="CorporateTVModel.Evento">
+              <MappingFragment StoreEntitySet="Evento">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="text" ColumnName="text" />
+                <ScalarProperty Name="eventstart" ColumnName="eventstart" />
+                <ScalarProperty Name="eventend" ColumnName="eventend" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LogErro">
+            <EntityTypeMapping TypeName="CorporateTVModel.LogErro">
+              <MappingFragment StoreEntitySet="LogErro">
+                <ScalarProperty Name="LogErroID" ColumnName="LogErroID" />
+                <ScalarProperty Name="Importancia" ColumnName="Importancia" />
+                <ScalarProperty Name="Origem" ColumnName="Origem" />
+                <ScalarProperty Name="Descricao" ColumnName="Descricao" />
+                <ScalarProperty Name="DataHora" ColumnName="DataHora" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LogEvento">
+            <EntityTypeMapping TypeName="CorporateTVModel.LogEvento">
+              <MappingFragment StoreEntitySet="LogEvento">
+                <ScalarProperty Name="LogEventoID" ColumnName="LogEventoID" />
+                <ScalarProperty Name="EventoID" ColumnName="EventoID" />
+                <ScalarProperty Name="UtilizadorID" ColumnName="UtilizadorID" />
+                <ScalarProperty Name="Tabela" ColumnName="Tabela" />
+                <ScalarProperty Name="Campo" ColumnName="Campo" />
+                <ScalarProperty Name="Identificador" ColumnName="Identificador" />
+                <ScalarProperty Name="ValorNovo" ColumnName="ValorNovo" />
+                <ScalarProperty Name="ValorAnterior" ColumnName="ValorAnterior" />
+                <ScalarProperty Name="DataHora" ColumnName="DataHora" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Programacao">
+            <EntityTypeMapping TypeName="CorporateTVModel.Programacao">
+              <MappingFragment StoreEntitySet="Programacao">
+                <ScalarProperty Name="DataAlteracao" ColumnName="DataAlteracao" />
+                <ScalarProperty Name="ProgramacaoID" ColumnName="ProgramacaoID" />
+                <ScalarProperty Name="EmpresaID" ColumnName="EmpresaID" />
+                <ScalarProperty Name="Designacao" ColumnName="Designacao" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProgramacaoAgendamento">
+            <EntityTypeMapping TypeName="CorporateTVModel.ProgramacaoAgendamento">
+              <MappingFragment StoreEntitySet="ProgramacaoAgendamento">
+                <ScalarProperty Name="ProgramacaoAgendamentoID" ColumnName="ProgramacaoAgendamentoID" />
+                <ScalarProperty Name="ProgramacaoID" ColumnName="ProgramacaoID" />
+                <ScalarProperty Name="ConteudoID" ColumnName="ConteudoID" />
+                <ScalarProperty Name="DiaSemana" ColumnName="DiaSemana" />
+                <ScalarProperty Name="Inicio" ColumnName="Inicio" />
+                <ScalarProperty Name="Fim" ColumnName="Fim" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tv">
+            <EntityTypeMapping TypeName="CorporateTVModel.Tv">
+              <MappingFragment StoreEntitySet="Tv">
+                <ScalarProperty Name="TvID" ColumnName="TvID" />
+                <ScalarProperty Name="EmpresaID" ColumnName="EmpresaID" />
+                <ScalarProperty Name="Designacao" ColumnName="Designacao" />
+                <ScalarProperty Name="ProgramacaoID" ColumnName="ProgramacaoID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Utilizador">
+            <EntityTypeMapping TypeName="CorporateTVModel.Utilizador">
+              <MappingFragment StoreEntitySet="Utilizador">
+                <ScalarProperty Name="UtilizadorID" ColumnName="UtilizadorID" />
+                <ScalarProperty Name="EmpresaID" ColumnName="EmpresaID" />
+                <ScalarProperty Name="Nome" ColumnName="Nome" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="PerfilUtilizador" ColumnName="PerfilUtilizador" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

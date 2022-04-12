@@ -1,0 +1,65 @@
+﻿@using System
+@using System.Configuration
+
+<nav class="navbar navbar-default navbar-fixed-top hidden-xs" role="navigation">
+    <div class="container">
+
+        <a class="navbar-left" href="~/"><img class="Logo" style="margin: 5px 0 5px 0;" /></a>
+
+        @if (!Request.Url.ToString().ToLower().Contains("medloc"))
+        {
+            <div class="visible-lg col-sm-5 header-title"><label for="">@SS.CorporateTV.BO.Resources.Geral.NomeApp</label></div>
+        }
+        else
+        {
+            <div class="visible-lg col-sm-5 header-title"><label for="">@SS.CorporateTV.BO.Resources.Geral.NomeApp</label></div>
+        }
+
+
+        @if (Request.IsAuthenticated)
+        {
+            <div class="navbar-right user-login-info">
+                <div class="nomeutilizador">
+                    <span class="glyphicon glyphicon-user"></span>
+
+                    @if (SS.CorporateTV.BO.ControladorSite.Utilizador != null)
+                    {
+                        if (SS.CorporateTV.BO.ControladorSite.Utilizador.Nome.Length > 40)
+                        {
+                            Html.Raw(String.Format("{0} {1}", SS.CorporateTV.BO.ControladorSite.Utilizador.Nome.Substring(0, 40), "..."));
+                        }
+                        else
+                        {
+                            @SS.CorporateTV.BO.ControladorSite.Utilizador.Nome;
+                        }
+                    }
+                    else if (Request.Url.ToString().ToLower().Contains("medloc"))
+                    {
+                        @SS.CorporateTV.BO.Util.GetCookieOrDefault(Request, "username", "name");
+                    }
+                </div>
+
+                <div class="nomeutilizadorlink">
+                    @if (Request.Url.ToString().ToLower().Contains("medloc"))
+                    {
+                        <a href="@Url.Action("CheckOut", "MedLoc", null)">
+                            <span class="glyphicon glyphicon-log-out"></span>@SS.CorporateTV.BO.Resources.Geral.Sair
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("Sair","Utilizador",null)">
+                            <span class="glyphicon glyphicon-log-out"></span>@SS.CorporateTV.BO.Resources.Geral.Sair
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</nav>
+<nav class="navbar navbar-fixed-top visible-xs" role="navigation">
+    <div class="container" style="text-align:left;">
+        <a class="navbar-left" href="~/"><img class="Logo" style="margin: 0px 0 5px 0;" /></a>
+    </div>
+</nav>
+

@@ -1,0 +1,41 @@
+﻿@using SS.CorporateTV.BO
+
+@model SS.CorporateTV.BO.Models.ConteudoModel
+
+@{
+    ViewBag.Title = "Detalhe";
+}
+
+@{ var permissoes = (List< SS.CorporateTV.Core.Enum.Permissao>)ViewData["Permissoes"]; }
+
+<div class="modal" id="divModal" tabindex="1" role="dialog" aria-labelledby="divModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header"><h3>@SS.CorporateTV.BO.Resources.Conteudo.ConteudoTvName</h3></div>
+            <div class="modal-body">
+                @if (Model.ID.HasValue)
+                {
+                    @Html.HiddenFor(ut => ut.ID)
+                    <ul class="nav nav-tabs" id="myTab" style="margin-top: 5px;">
+                        <li class="active"><a data-toggle="tab" href="#" id="@(Url.Action("_DetalheExtra") + "?id=" + Model.ID)">@SS.CorporateTV.BO.Resources.Conteudo.ConteudoTvName</a></li>
+                        <li id="liVideo" style=@(Model.Tipo == (int)SS.CorporateTV.Core.Enum.TipoConteudo.Video ? "" : "display:none;" )><a data-toggle="tab" href="#" name="tabVideo" id="@(Url.Action("_ListaVideos", "Conteudo", new {id = Model.ID }))">@SS.CorporateTV.BO.Resources.Conteudo.Video</a></li>
+                        <li id="liImagem" style=@(Model.Tipo == (int)SS.CorporateTV.Core.Enum.TipoConteudo.Imagem ? "" : "display:none;" )><a data-toggle="tab" href="#" name="tabImagem" id="@(Url.Action("_ListaImagens", "Conteudo", new {id = Model.ID }))">@SS.CorporateTV.BO.Resources.Conteudo.Imagem</a></li>
+                        <li style="display:none;"><a data-toggle="tab" href="#" id="@(Url.Action("_QRCode", "Conteudo", new {id = Model.ID }))">@SS.CorporateTV.BO.Resources.Conteudo.QRCode</a></li>
+                    </ul>
+                    <div id="tabcontent" class="tab-pane fade in active" style="margin-top: 10px;">
+                        @{ Html.RenderPartial("_DetalheExtra", Model); }
+                    </div>
+                }
+                else
+                {
+                    Html.RenderPartial("_DetalheExtra", Model);
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var orgID = @(Model.ID.HasValue ? Model.ID.Value : 0);
+    tabOnClick();
+</script>

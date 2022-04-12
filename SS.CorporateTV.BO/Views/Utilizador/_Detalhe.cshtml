@@ -1,0 +1,72 @@
+﻿@using SS.CorporateTV.BO.Controllers
+@using Resources = SS.CorporateTV.BO.Resources
+
+@model SS.CorporateTV.BO.Models.UtilizadorModel
+
+@{ var permissoes = (List<SS.CorporateTV.Core.Enum.Permissao>)ViewData["Permissoes"]; }
+
+@using (Ajax.BeginForm("Gravar", new AjaxOptions { HttpMethod = "POST", OnBegin = "StartWaiting('#divModal .modal-footer');", OnComplete = "StopWaiting('inline')" }))
+{
+    <div class="modal" id="divModal" tabindex="1" role="dialog" aria-labelledby="divModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header"><h3>@Resources.Utilizador.Titulo</h3></div>
+                <div class="modal-body">
+                    @Html.HiddenFor(ut => ut.ID)
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            @Html.LabelFor(model => model.Nome)
+                            @Html.TextBoxFor(model => model.Nome, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Nome)
+                        </div>
+                        <div class="form-group col-sm-6">
+                            @Html.LabelFor(model => model.PerfilUtilizador)
+                            @Html.DropDownListFor(model => model.PerfilUtilizador,
+                                UtilizadorController.ConstroiListaPerfilUtilizadorDropdown(), "", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.PerfilUtilizador)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            @Html.LabelFor(model => model.UserName)
+                            @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", @spellcheck = "false" })
+                            @Html.ValidationMessageFor(model => model.UserName)
+                        </div>
+                        @if (!Model.ID.HasValue)
+                        {
+                            <div class="form-group col-sm-6">
+                                @Html.LabelFor(model => model.Password)
+                                @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Password)
+                            </div>
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(model => model.Password)
+                        }
+                    </div>                        
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@Resources.Geral.Fechar</button>
+                    @if (Model.ID != null && permissoes.Contains(SS.CorporateTV.Core.Enum.Permissao.Apagar))
+                    {
+                        @Ajax.ActionLink(Resources.Geral.Apagar, "Apagar",
+                            new { @id = Model.ID },
+                            new AjaxOptions
+                            {
+                                HttpMethod = "Delete",
+                                Confirm = Resources.Geral.TemCerteza,
+                                OnBegin = "StartWaiting('.modal-footer');",
+                                OnComplete = "StopWaiting('inline');"
+                            },
+                            new { @class = "btn btn-danger" })
+                    }
+                    @if (permissoes.Contains(SS.CorporateTV.Core.Enum.Permissao.Gravar))
+                    {
+                        <input type="submit" class="btn btn-success" value="@Resources.Geral.Gravar" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@SS.CorporateTV.FO.Resources.Geral.NomeApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge;" />
+    <link href="CORPORATETV.ico" rel="shortcut icon" type="image/x-icon" />
+
+    @System.Web.Optimization.Styles.Render("~/Content/core")
+    @System.Web.Optimization.Scripts.Render("~/scripts/core")
+    @System.Web.Optimization.Scripts.Render("~/scripts/jqueryval")
+    <!-- Respond.js =need to be loaded after all CSS3 media= -->
+    @{ Html.RenderPartial("_respond"); }
+</head>
+<body class="text-body" style="margin:0;padding:0;border:0;outline:0;">
+
+    <nav class="navbar navbar-default navbar-fixed-top hidden-xs" role="navigation">
+        <div class="container">
+            <a class="navbar-left" href="~/"><img class="Logo" style="width:300px; margin: 0px 0 5px 0; " /></a>
+            <div class="visible-lg col-sm-7 header-title"><label for="">@SS.CorporateTV.FO.Resources.Geral.ConfigNome</label></div>
+
+        </div>
+    </nav>
+    <nav class="navbar navbar-fixed-top visible-xs" role="navigation">
+        <div class="container" style="text-align:left;">
+            <a href="~/"><img class="navbar-left Logo" style="width:300px; margin: 0;" /></a>
+        </div>
+    </nav>
+
+    <div id="conteudo" class="container">
+        <div class="row">
+
+            <div class="col-md-12 margemtoplogin">
+                @RenderBody()
+            </div>
+
+        </div>
+    </div>
+
+    <div id="divmodaltarget"></div>
+    <div id="divmodaltargetsub"></div>
+
+    @RenderSection("scripts", required: false)
+
+    <div style="display:none; float: right;" class="formLoader">
+        <img src="~/images/loader.gif" alt="loading" />
+    </div>
+</body>
+</html>

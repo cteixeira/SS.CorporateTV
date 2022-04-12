@@ -1,0 +1,35 @@
+﻿@model Exception
+
+<div style="position:absolute; margin-top:15% ; margin-left: 27%">
+
+    <h3 style="font-size:5em">@Model.Message</h3>
+
+</div>
+<script>
+    window.onload = function () {
+        document.body.style.margin = 0;
+        document.body.style.marginTop = 0;
+
+        function AtualizarStream() {
+            var xmlhttp = new XMLHttpRequest();
+
+            xmlhttp.onreadystatechange = function () {
+
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    console.log(xmlhttp.response);
+                    if (!xmlhttp.response) { return; }
+                    var jsontv = JSON.parse(xmlhttp.response);
+                    var jsonsource = jsontv.Source;
+                    var jsonAtivo = jsontv.Ativo;
+                    if (jsonAtivo) {
+                        window.location.href = "../Tv"
+
+                    }
+                }
+            }
+            xmlhttp.open("GET", "/corporatetv_fo/tv/AtualizarStream", true);
+            xmlhttp.send();
+        }
+        setInterval(AtualizarStream, "5000");
+    }
+</script>

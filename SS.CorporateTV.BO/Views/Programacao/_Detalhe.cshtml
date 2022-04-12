@@ -1,0 +1,173 @@
+﻿@using SS.CorporateTV.BO.Controllers
+@using DayPilot.Web.Mvc.Events.Calendar
+
+@model SS.CorporateTV.BO.Models.ProgramacaoModel
+
+@{ 
+    var permissoes = (List<SS.CorporateTV.Core.Enum.Permissao>)ViewData["Permissoes"];
+
+}
+
+@*<script src="@Url.Content("~/Scripts/DayPilot/daypilot-all.min.js")" type="text/javascript"></script>*@ 
+
+<script type="text/javascript">
+
+    function createEvent(start, end, resource) {
+        modal(false).showUrl("@Url.Content("~/Dialog/NovoAgendamento")?pid=" + @Model.ProgramacaoID + "&start=" + start.toStringSortable() + "&end=" + end.toStringSortable());
+    }
+
+    function createEmptyEvent() {
+        modal(true).showUrl("@Url.Content("~/Dialog/NovoAgendamento")?pid=" + @Model.ProgramacaoID + "&start=" + '' + "&end=" + '');
+    }
+
+    function editEvent(id) {
+        var retVal = confirm("Deseja apagar este agendamento?");
+        if (retVal == true) {
+            $.ajax({
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                url: '@Url.Action("ApagarEvento")',
+                data: JSON.stringify({ pid: id }),
+                success: function (result) {
+                    dpc.commandCallBack('refresh');
+                    dpc.clearSelection();
+                },
+                error: function (xhr, status, error) {
+                    alert('error');
+                }
+            });
+
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    function moveEvent(e, newStart, newEnd) {
+        //Bug no Chrome
+        if (newStart != e.data.start && newEnd != e.data.end) {
+            dpc.eventMoveCallBack(e, newStart, newEnd);
+        }
+        else {
+            editEvent(e.data.id)
+        }
+    }
+
+    function modal(isnew) {
+        var modal = new DayPilot.Modal();
+        modal.top = 60;
+        modal.width = 300;
+        modal.opacity = 1;
+        modal.border = "5px solid #d0d0d0";
+        modal.closed = function () {
+            if (this.result == "OK") {
+                dpc.commandCallBack('refresh');
+            }
+            dpc.clearSelection();
+        };
+        if (isnew)
+            modal.height = 328;
+        else
+            modal.height = 252;
+
+        return modal;
+    }
+</script>
+
+@using (Ajax.BeginForm("Gravar", new AjaxOptions { HttpMethod = "POST", OnBegin = "StartWaiting('#divModal .modal-footer');", OnComplete = "StopWaiting('inline')" }))
+{
+    <style type='text/css'>
+        .calendar_default_event_inner:hover {          
+            background: url("@Url.Content("~/")Images/delete.png") 92px 4px no-repeat;    
+            background-color: rgb(221, 221, 221);
+        }
+    </style>
+    <div class="modal" id="divModal" tabindex="1" role="dialog" aria-labelledby="divModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header"><h3>@SS.CorporateTV.BO.Resources.Programacao.Titulo</h3></div>
+                <div class="modal-body">
+                    @Html.HiddenFor(ut => ut.ProgramacaoID)
+                    <div class="row">
+                        <div class="form-group col-sm-9">
+                            @Html.LabelFor(model => model.Designacao)
+                            @Html.TextBoxFor(model => model.Designacao, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Designacao)
+                        </div>              
+                        <div class="form-group col-sm-3 operacoes" style="margin-top:33px;padding-left: 100px;">
+                            <a href="#" onclick="createEmptyEvent();"><span class="glyphicon glyphicon-plus-sign"></span>@SS.CorporateTV.BO.Resources.Programacao.Agendamento</a>
+                        </div>        
+                    </div>
+                    <div class="row">
+                            <div class="form-group col-sm-12">
+                                @Html.DayPilotCalendar("dpc", new DayPilot.Web.Mvc.DayPilotCalendarConfig
+                           {
+                               BackendUrl = Url.Content("~/Programacao/Backend?pid=" + Model.ProgramacaoID),
+                               ViewType = DayPilot.Web.Mvc.Enums.Calendar.ViewType.Days,
+                               
+                               //,
+                               EventResizeHandling = DayPilot.Web.Mvc.Events.Calendar.EventResizeHandlingType.CallBack,
+                               //EventMoveHandling = DayPilot.Web.Mvc.Events.Calendar.EventMoveHandlingType.CallBack,
+                               EventMoveHandling = EventMoveHandlingType.JavaScript,
+                               EventMoveJavaScript = "moveEvent(e, newStart, newEnd)",
+                               StartDate = new DateTime(2016, 01, 04),
+                               WeekStarts = DayPilot.Web.Mvc.Enums.WeekStarts.Monday,
+                               Days = 7,
+                               TimeRangeSelectedHandling = TimeRangeSelectedHandlingType.JavaScript,
+                               TimeRangeSelectedJavaScript = "createEvent(start, end)",
+                               EventClickHandling = EventClickHandlingType.JavaScript, //DayPilot.Web.Mvc.Events.Calendar.EventClickHandlingType.CallBack,
+                               EventClickJavaScript = "editEvent(e.value())"
+                           })
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="modal-footer">
+                    <a class="btn btn-default" href="@(Url.Action("Index"))" >@SS.CorporateTV.BO.Resources.Geral.Fechar</a>
+
+                    @if (Model.ProgramacaoID != null && permissoes.Contains(SS.CorporateTV.Core.Enum.Permissao.Apagar))
+                    {
+                        @Ajax.ActionLink(SS.CorporateTV.BO.Resources.Geral.Apagar, "Apagar",
+                                 new { @id = Model.ProgramacaoID },
+                            new AjaxOptions
+                            {
+                                HttpMethod = "Delete",
+                                Confirm = SS.CorporateTV.BO.Resources.Geral.TemCerteza,
+                                OnBegin = "StartWaiting('.modal-footer');",
+                                OnComplete = "StopWaiting('inline');"
+                            },
+                            new { @class = "btn btn-danger" })
+                    }
+                    @if (permissoes.Contains(SS.CorporateTV.Core.Enum.Permissao.Gravar))
+                    {
+                        <input type="submit" class="btn btn-success" value="@SS.CorporateTV.BO.Resources.Geral.Gravar" />
+                    }
+                </div>                
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $(".external div").each(function () {
+                    $(this).css({
+                        cursor: "move",
+                        width: "100px",
+                        border: "1px solid black",
+                        padding: "5px"
+                    });
+                    var item = {
+                        element: this,
+                        id: $(this).data("id"),
+                        text: $(this).text(),
+                        duration: $(this).data("duration"),
+                        programacaoid: $(this).data("data-prgid"),
+                        keepElement: true
+                    };
+                });
+                
+                $(".calendar_default_corner div").text("");
+                $(".calendar_default_corner div").attr('style', '');
+            });
+        </script>
+    </div>
+}

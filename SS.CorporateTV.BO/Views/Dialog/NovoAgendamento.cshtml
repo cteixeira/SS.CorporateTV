@@ -1,0 +1,99 @@
+﻿@{ Layout = "~/Views/Shared/_Blank.cshtml"; }
+
+@using SS.CorporateTV.BO.Controllers
+@model SS.CorporateTV.BO.Models.ProgramacaoAgendamentoModel
+
+@{ var permissoes = (List<SS.CorporateTV.Core.Enum.Permissao>)ViewData["Permissoes"]; }
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>@SS.CorporateTV.BO.Resources.Geral.NomeApp</title>
+        @System.Web.Optimization.Styles.Render("~/Content/core")
+        @System.Web.Optimization.Styles.Render("~/Styles/Site.Empresa.css")
+
+        <style type='text/css'>
+            body {
+                font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+                font-size: 13px;
+                color: #5A5A5A;
+            }
+        </style>
+    </head>
+    <body class="container">
+        @using (Ajax.BeginForm("NovoAgendamento", null, new AjaxOptions { HttpMethod = "POST", OnBegin = "StartWaiting('#divModal .modal-footer');", OnComplete = "StopWaiting('inline')" }, 
+            new { id = "NovoAgendamento" }))
+        {            
+            @Html.HiddenFor(model => model.ProgramacaoID)
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        @Html.LabelFor(model => model.ConteudoID) @Html.ValidationMessageFor(model => model.ConteudoID)
+                        @Html.DropDownListFor(model => model.ConteudoID,
+                            SS.CorporateTV.BO.Controllers.ConteudoController.ConstroiListaConteudoDropdown(),
+                            new
+                            {
+                                @Id = "Conteudo",
+                                @class = "form-control"
+                            })
+                    </div>
+                </div>
+                <div class="row">
+                    @if (Model.DiaSemana == 7)
+                    {
+                        <div class="form-group col-sm-6">                        
+                            @Html.LabelFor(model => model.DiaSemana) @Html.ValidationMessageFor(model => model.DiaSemana)
+                            @Html.DropDownListFor(model => model.DiaSemana,
+                                ProgramacaoController.ConstroiListaDiasSemana, "", new { @class = "form-control" })
+                        </div>
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(model => model.DiaSemana)
+                    }
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-6">
+                        @Html.LabelFor(model => model.InicioStr) 
+                        @Html.DropDownListFor(model => model.InicioStr,
+                            ProgramacaoController.ConstroiListaHoras, "", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.InicioStr)
+                        @*@Html.TextBoxFor(model => model.Inicio, "{0:hh\\:mm}", new { @class = "form-control" })*@
+                    </div>
+                    <div class="form-group col-xs-6">
+                        @Html.LabelFor(model => model.FimStr) 
+                        @Html.DropDownListFor(model => model.FimStr,
+                            ProgramacaoController.ConstroiListaHoras, "", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.FimStr)
+                        @*@Html.TextBoxFor(model => model.Fim, "{0:hh\\:mm}", new { @class = "form-control" })*@
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer modal-fixed" style="top:@(Model.DiaSemana == 7 ? "274px" : "200px")">
+                <a href="javascript:close()" class="btn btn-default" style="text-decoration: none;">@SS.CorporateTV.BO.Resources.Geral.Fechar</a>
+                @if (permissoes.Contains(SS.CorporateTV.Core.Enum.Permissao.Gravar))
+                {
+                    <input type="submit" class="btn btn-success" value="@SS.CorporateTV.BO.Resources.Geral.Gravar" />
+                }
+            </div>
+            }
+            <script type="text/javascript">
+                function close(result) {
+                    if (parent && parent.DayPilot && parent.DayPilot.ModalStatic) {
+                        parent.DayPilot.ModalStatic.close(result);
+                    }
+                }
+
+                    $("#NovoAgendamento").submit(function () {
+                        var f = $("#NovoAgendamento");
+                        f.validate();
+                        if (f.valid()) {
+                            $.post(f.action, f.serialize(), function (result) {
+                                close(eval(result));
+                            });
+                            return false;
+                        }
+                    });
+            </script>
+    </body>
+</html>

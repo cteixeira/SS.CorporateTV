@@ -1,0 +1,295 @@
+﻿@using SS.CorporateTV.BO.Web.ExtensionMethods
+@using Resources = SS.CorporateTV.BO.Resources;
+
+@model IEnumerable<SS.CorporateTV.BO.Models.ConteudoImagemModel>
+
+@{
+    ViewBag.Title = "_ListaImagens";
+    
+    var permissoes = (List<SS.CorporateTV.Core.Enum.Permissao>)ViewData["Permissoes"];
+    var ID = ViewData["ID"];
+}
+
+<div id="conteudoTabelaFicheiro" class="row" style="padding:12px;">
+    <ul id="liHeader">
+        <li class="ui-state-default">
+            <div class="row">
+                <div class="col-sm-1 col-xs-2">                        
+                    @SS.CorporateTV.BO.Resources.Conteudo.Imagem
+                </div>
+                <div class="col-sm-6 col-xs-4">
+                    @SS.CorporateTV.BO.Resources.Conteudo.Designacao
+                </div>
+                <div class="col-sm-3 col-xs-2">
+                    @SS.CorporateTV.BO.Resources.Conteudo.Duracao
+                </div>
+                <div class="col-sm-1 col-xs-2" style="padding-left: 18px">
+                    @if (permissoes.Contains(SS.CorporateTV.Core.Enum.Permissao.Apagar))
+                    {
+                        <input type="checkbox" id="cbSelecionarTudo" value="false" onclick="$('#sortableList input:checkbox:enabled').each(function () { $(this).prop('checked', $('#cbSelecionarTudo').prop('checked')); });" />
+                    }
+                </div>
+                <div class="col-sm-1 col-xs-2">
+                    <a title="Ajuda" style="cursor:pointer;" id="Ajuda">
+                        <span class="glyphicon glyphicon-question-sign"></span>
+                    </a>
+                </div>
+            </div>
+        </li>
+    </ul>
+        @if (Model != null && Model.Any())
+        {
+            <ul id="sortableList" class="connectedSortable">
+                @foreach (var item in @Model)
+                {
+                    <li class="ui-state-default" id="@item.ConteudoImagemID">
+                        @Html.HiddenFor(ut => item.Ordem, new { @id = "Ordem" + item.ConteudoImagemID })
+                        <div class="row">
+                            <div class="col-sm-1 col-xs-2">
+                                <img id="imagem" src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(item.Binario))" class="img-responsive" @*style="width:80px"*@ />
+                            </div>
+                            <div class="col-sm-6 col-xs-4">
+                                <div id="display" style="word-wrap: break-word;">
+                                    @Html.DisplayFor(m => item.Designacao)
+                                </div>
+                                <div id="editor" style="display:none;">
+                                    @Html.TextBoxFor(model => item.Designacao, new { @id = "Designacao" + item.ConteudoImagemID, @class = "form-control" })
+                                </div>   
+                            </div>
+                            <div class="col-sm-3 col-xs-2">
+                                <div id="display">
+                                    @Html.DisplayFor(m => item.Duracao)
+                                </div>
+                                <div id="editor" style="display:none;">
+                                    @Html.TextBoxFor(model => item.Duracao, new { @id = "Duracao" + item.ConteudoImagemID, @class = "form-control" })
+                                </div>   
+                            </div>
+                            <div class="col-sm-1 col-xs-2"  style="width: 10px;">
+                                @if (permissoes.Contains(SS.CorporateTV.Core.Enum.Permissao.Apagar))
+                                {
+                                    <input type="checkbox" class="Validar" value="false" id="@item.ConteudoImagemID"
+                                            onclick="$('#cbSelecionarTudo').prop('checked', $(this).prop('checked') && $('#conteudoTabelaFicheiro input:checkbox.Validar').length === $('#conteudoTabelaFicheiro input:checkbox.Validar:checked').length);">
+                                }
+                            </div>
+                            <div class="col-sm-1 col-xs-2" style="float: right;">
+                                @if (permissoes.Contains(SS.CorporateTV.Core.Enum.Permissao.Gravar))
+                                {
+                                    <div style="width:10%; display: flex;" class="EditarItemLista" id=":@item.ConteudoImagemID">
+                                        <a title="@Resources.Geral.Editar" style="cursor:pointer;" id=":@item.ConteudoImagemID" onclick="EditarItemLista('@item.ConteudoImagemID');">
+                                            <span class="glyphicon glyphicon-edit"></span>
+                                        </a>
+                                    </div>
+                                    <div style="width:10%;" class="GravarItemLista" id=":@item.ConteudoImagemID" hidden>
+                                        <a title="@Resources.Geral.Fechar" style="cursor: pointer;" class="CancelarItemLista" id=":@item.ConteudoImagemID" onclick="CancelarItemLista('@item.ConteudoImagemID');">
+                                            <span class="glyphicon glyphicon-ban-circle"></span>
+                                        </a>
+                                        <a title="@Resources.Geral.Gravar" style="cursor: pointer;" id=":@item.ConteudoImagemID" onclick="GravarItemLista('@item.ConteudoImagemID');">
+                                            <span class="glyphicon glyphicon-saved"></span>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+</div>
+
+<div id="frmFicheiros">
+    @{ Html.RenderAction("_NovaImagem", "Conteudo", new { id = ID }); }
+</div>
+
+<div class="row">
+    <div class="form-group col-sm-12 footer" style="margin-top:10px">
+        <a class="btn btn-default" href="@(Url.Action("Index"))">@SS.CorporateTV.BO.Resources.Geral.Fechar</a>
+        @if (permissoes.Contains(SS.CorporateTV.Core.Enum.Permissao.Apagar) && Model != null && Model.Any())
+        {
+            @Ajax.ActionLink(SS.CorporateTV.BO.Resources.Geral.Apagar, "ApagarLista",
+            new { conteudoId = ID},
+            new AjaxOptions
+            {
+                HttpMethod = "Delete",
+                OnBegin = "return ConfirmDone()",
+                OnSuccess = "Notifica('" + SS.CorporateTV.BO.Resources.Geral.ApagarSucesso + "', 'success');getTab();"
+            },
+            new { @id = "btnApagar", @class = "btn btn-danger" })
+        }
+        @if (permissoes.Contains(SS.CorporateTV.Core.Enum.Permissao.Gravar))
+        {
+            @Ajax.ActionLink(SS.CorporateTV.BO.Resources.Geral.Gravar, "GravarLista",
+            new { conteudoId = ID },
+            new AjaxOptions
+            {
+                HttpMethod = "Post",
+                OnSuccess = "Notifica('" + SS.CorporateTV.BO.Resources.Geral.GravarSucesso + "', 'success');getTab();"
+            },
+            new { @id = "btnGravar", @class = "btn btn-success" })
+
+            <button type="button" class="btn btn-primary" onclick="MostraModal('#novoFicheiro', true); $('#Nome').val(null); $('#file').val(null); ResetValidators(); return false;">
+                <span class="glyphicon glyphicon-plus-sign"></span>@SS.CorporateTV.BO.Resources.Geral.Adicionar
+            </button>
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="bottom:-200px" >
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="" id="imagepreview" style="width: 412px; height: 264px;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="EscondeModal('imagemodal');">@SS.CorporateTV.BO.Resources.Geral.Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="imagemodalAjuda" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="bottom:-200px">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img src="@Url.Content("~/Images/AjudaOrdenacaoCaption.gif")" id="imagepreview" style="width: 870px; height: 561px;" >
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="EscondeModal('imagemodalAjuda');">@SS.CorporateTV.BO.Resources.Geral.Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@helper ScriptClienteProdutos(WebViewPage page)
+{
+    <script type="text/javascript">
+
+        $(function () {
+            $('#btnApagar').click(function () {
+                ListarFicheirosIds('conteudoTabelaFicheiro');
+            });
+
+            $('#btnGravar').click(function () {
+                ListarSortedListIds('sortableList');
+            });
+
+            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                var idIcon = $('.EditarItemLista');
+                idIcon.append("<a title=\"Visualizar\" style=\"cursor:pointer;\" id=\"preview\" ><span class=\"glyphicon glyphicon-eye-open\"></span></a>")
+
+                $("#sortableList #preview").click(function (e) {
+                    $('#imagepreview').attr('src', $(this).closest('li').find('img').attr('src')); // here asign the image to the modal when the user click the enlarge link
+                    $('#imagemodal').modal('show');
+                });
+
+                $("#sortableList #imagem").click(function (e) {
+                    $('#imagepreview').attr('src', $(this).closest('li').find('img').attr('src')); // here asign the image to the modal when the user click the enlarge link
+                    $('#imagemodal').modal('show');
+                });
+            }
+            else {
+                $("#sortableList li > div > div:not(:last-child)").click(function (e) {
+                    if (!$(e.target).is("input")) {
+                        $('#imagepreview').attr('src', $(this).closest('li').find('img').attr('src')); // here asign the image to the modal when the user click the enlarge link
+                        $('#imagemodal').modal('show'); // imagemodal is the id attribute assigned to the bootstrap modal, then i use the show function
+                    }
+                });
+            }
+
+            $("#sortableList li > div").hover(function (e) {
+                if (!$(e.target).is("input")) {
+                    $(this).css('cursor', 'move');
+                    $(this).attr('title', 'Clique para ver');
+                }
+            });
+
+            $("#sortableList").sortable({
+                connectWith: ".connectedSortable"
+            });//.disableSelection();
+
+            $("ul.connectedSortable li:odd").addClass("oddItem");
+            $("ul.connectedSortable li:even").addClass("evenItem");
+
+            $("#Ajuda").click(function (e) {
+                $('#imagemodalAjuda').modal('show');
+            });
+            //if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+            //    $('#sortableList li > div > div > div > input').click(function () {
+            //        $(this).focus();
+            //    });
+            //}
+        });
+
+        function ConfirmDone() {
+            if ($('#sortableList input:checkbox.Validar:checked').length == 0) {
+                Notifica("Selecione os ficheiros que pretende apagar !", "alert");
+                return false;
+            }
+            else
+                return confirm('@SS.CorporateTV.BO.Resources.Geral.TemCerteza');
+        }
+
+        function EditarItemLista(id) {
+            $('#sortableList #' + id + " #display").hide();
+            $('#sortableList #' + id + " #editor").show();
+
+            $('div.GravarItemLista#\\:' + id).css('display', 'flex');
+            $('div.EditarItemLista#\\:' + id).hide();
+        }
+
+        function CancelarItemLista(id) {
+            $('#Designacao' + id).val($('#Designacao' + id).prop('defaultValue'));
+            $('#Duracao' + id).val($('#Duracao' + id).prop('defaultValue'));
+
+            $('#sortableList #' + id + " #display").show();
+            $('#sortableList #' + id + " #editor").hide();
+
+            $('div.GravarItemLista#\\:' + id).hide();
+            $('div.EditarItemLista#\\:' + id).css('display', 'flex');
+        }
+
+        function GravarItemLista(id) {
+            var designacao = $('#sortableList #' + id + ' input:eq(1)').val();
+            var duracao = $('#sortableList #' + id + ' input:eq(2)').val();
+            var ordem = $('#Ordem' + id).val();
+
+            if (!designacao) {
+                Notifica('@page.Html.Raw(Resources.Conteudo.Designacao)' + ' ' + '@page.Html.Raw(Resources.Erro.CampoObrigatorio)', "error");
+                return false;
+            }
+
+            if (!duracao) {
+                Notifica('@page.Html.Raw(Resources.Conteudo.Duracao)' + ' ' + '@page.Html.Raw(Resources.Erro.CampoObrigatorio)', "error");
+                return false;
+            }
+
+            if (Math.floor(duracao.trim()) != id && !$.isNumeric(duracao.trim()))
+            {
+                Notifica('@page.Html.Raw(Resources.Conteudo.Duracao)' + ' ' + '@page.Html.Raw(Resources.Erro.FormatoNumeroInteiro2)', "error");
+                return false;
+            }
+
+            var formData = {};
+
+            formData["ConteudoID"] = '@page.ViewData["ID"]';
+            formData["ConteudoImagemID"] = id;
+            formData["Designacao"] = designacao.trim();
+            formData["Duracao"] = duracao.trim();
+            formData["Ordem"] = ordem;
+
+            $.ajax({
+                url: '@page.Url.Action("GravarConteudoImagemLista")',
+                data: formData,
+                type: 'POST',
+                success: function (data) {
+                    $('#sortableList #' + id + " #display").show();
+                    $('#sortableList #' + id + " #editor").hide();
+
+                    $('div.GravarItemLista#\\:' + id).hide();
+                    $('div.EditarItemLista#\\:' + id).css('display', 'flex');
+                }
+            });
+        }
+    </script>
+}
+
+@ScriptClienteProdutos(this)

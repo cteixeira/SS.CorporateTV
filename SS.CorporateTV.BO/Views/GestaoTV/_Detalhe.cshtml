@@ -1,0 +1,36 @@
+﻿@using SS.CorporateTV.BO.Controllers
+@model SS.CorporateTV.BO.Models.TvModel
+
+@{
+    ViewBag.Title = "Detalhe";
+}
+
+@{ var permissoes = (List<SS.CorporateTV.Core.Enum.Permissao>)ViewData["Permissoes"]; }
+
+
+<div class="modal" id="divModal" tabindex="1" role="dialog" aria-labelledby="divModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header"><h3>@(Model.ID != null ? Model.Designacao : SS.CorporateTV.BO.Resources.GestaoTv.Tvs)</h3></div>
+            <div class="modal-body">
+                @if (Model.ID != null)
+                {
+                    <ul class="nav nav-tabs" id="myTab" style="margin-top:5px;">
+                        <li class="active"><a data-toggle="tab" href="#" id="@(Url.Action("_DetalheExtra") + "?id=" + Model.ID)">@SS.CorporateTV.BO.Resources.GestaoTv.Titulo</a></li>
+                    </ul>
+                    <div id="tabcontent" class="tab-pane fade in active conteudo-tabela" style="margin-top:10px;">
+                        @{ Html.RenderPartial("_DetalheExtra", Model); }
+                    </div>
+                }
+                else
+                {
+                    Html.RenderPartial("_DetalheExtra", Model);
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    tabOnClick();
+</script>

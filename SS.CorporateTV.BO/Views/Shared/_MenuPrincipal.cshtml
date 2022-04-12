@@ -1,0 +1,47 @@
+﻿@using System.Runtime.Versioning
+@using SS.CorporateTV.BO.Controllers
+
+@{ List<UtilizadorController.OpcaoMenu> lista = UtilizadorController.ConstroiMenu(); }
+
+<!--Begin Top Menu Mobile-->
+<div class="visible-xs">
+    <nav class="navbar navbar-default" role="navigation" data-toggle="collapse" data-target="#responsive-topmenu">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Mostrar Menu</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <span class="navbar-brand">Menu</span>
+        </div>
+        <div id="responsive-topmenu" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                @foreach (var opcao in lista)
+                {
+                    <li class="@((opcao.Controlador.Equals(ViewContext.RouteData.Values["controller"]) && opcao.Accao.Equals(ViewContext.RouteData.Values["action"])) ? "active" : String.Empty)">
+                        <a href="@Url.Action(opcao.Accao, opcao.Controlador)"><i class="glyphicon icon-@opcao.Icone"></i>@opcao.Designacao</a>
+                    </li>
+                }
+                <li>
+                    <a href="@Url.Action("Sair","Utilizador",null)">
+                        <span class="glyphicon glyphicon-log-out"></span>@SS.CorporateTV.BO.Resources.Geral.Sair
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<!--End Top Menu Mobile-->
+
+<div class="hidden-xs">
+    <ul class="list-group menu">
+        @foreach (var opcao in lista)
+        {
+            <li class="list-group-item @((opcao.Controlador.Equals(ViewContext.RouteData.Values["controller"]) && opcao.Accao.Equals(ViewContext.RouteData.Values["action"])) ? "active" : String.Empty)">
+                <a href="@Url.Action(opcao.Accao, opcao.Controlador)"><span class="glyphicon icon-@opcao.Controlador.ToLower()"></span>@opcao.Designacao</a>
+            </li>
+        }
+    </ul>
+</div>
